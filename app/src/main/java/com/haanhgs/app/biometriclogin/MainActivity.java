@@ -62,7 +62,11 @@ public class MainActivity extends AppCompatActivity {
                 new BiometricPrompt.PromptInfo.Builder()
                         .setTitle("Login with Biometrics")
                         .setSubtitle("Log in using your credentials")
-                        .setNegativeButtonText("Cancel")
+//                        .setNegativeButtonText("Cancel")
+//                        .setConfirmationRequired(true)
+                        //this will set other way to login
+                        //but have to remove setNegativeButton :)
+                        .setDeviceCredentialAllowed(true)
                         .build();
 
         BiometricPrompt biometricPrompt = new BiometricPrompt(MainActivity.this,
@@ -120,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.clHome);
         if (fragment instanceof OnBackPress){
             ((OnBackPress)fragment).onBackPressed();
+        }else {
+            super.onBackPressed();
         }
 
     }
