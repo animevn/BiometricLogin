@@ -28,4 +28,5 @@ public class Home extends Fragment implements OnBackPress{
             if (fragment != null) ft.remove(fragment).commit();
         }
     }
+
 }
