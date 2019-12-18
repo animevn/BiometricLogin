@@ -9,8 +9,10 @@ import android.widget.ProgressBar;
 import java.util.concurrent.Executor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
@@ -27,10 +29,9 @@ public class MainActivity extends AppCompatActivity {
     ConstraintLayout clHome;
 
     private static final String ETAG = "E.MainActivity";
+    private static final String DTAG = "D.MainActivity";
     private BiometricPrompt.PromptInfo promptInfo;
-
-    private Handler handler = new Handler();
-    private Executor executor = runnable -> handler.post(runnable);
+    private BiometricManager manager;
 
     private void initViews() {
         pbrMain.setVisibility(View.INVISIBLE);
@@ -71,13 +72,33 @@ public class MainActivity extends AppCompatActivity {
                 .build();
     }
 
+    private void checkBiometrics(){
+        manager = BiometricManager.from(this);
+        switch (manager.canAuthenticate()) {
+            case BiometricManager.BIOMETRIC_SUCCESS:
+                Log.d(DTAG, "App can authenticate using biometrics.");
+                getPromtInfo();
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
+                Log.e(ETAG, "No biometric features available on this device.");
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
+                Log.e(ETAG, "Biometric features are currently unavailable.");
+                break;
+            case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
+                Log.e(ETAG, "The user hasn't associated " +
+                        "any biometric credentials with their account.");
+                break;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initViews();
-        getPromtInfo();
+        checkBiometrics();
     }
 
     private void listenToBackPressed() {
@@ -95,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void promtBiometric(){
+        Executor executor = ContextCompat.getMainExecutor(this);
         BiometricPrompt biometricPrompt = new BiometricPrompt(this, executor,
                 new BiometricPrompt.AuthenticationCallback() {
             @Override
@@ -128,6 +150,6 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.bnSignIn)
     public void onViewClicked() {
         pbrMain.setVisibility(View.VISIBLE);
-        promtBiometric();
+        if (promptInfo != null) promtBiometric();
     }
 }
