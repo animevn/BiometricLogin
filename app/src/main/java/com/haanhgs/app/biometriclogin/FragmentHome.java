@@ -7,9 +7,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-public class Home extends Fragment implements OnBackPress{
+public class FragmentHome extends Fragment implements OnBackPress{
 
     @Nullable
     @Override
@@ -22,9 +23,10 @@ public class Home extends Fragment implements OnBackPress{
     @Override
     public void onBackPressed() {
         if (getActivity() != null)  ((MainActivity)getActivity()).showViews();
-        if (getFragmentManager() != null) {
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            Fragment fragment = getFragmentManager().findFragmentById(R.id.clHome);
+        FragmentManager manager = getFragmentManager();
+        if (manager != null) {
+            FragmentTransaction ft = manager.beginTransaction();
+            Fragment fragment = manager.findFragmentById(R.id.clHome);
             if (fragment != null) ft.remove(fragment).commit();
         }
     }

@@ -1,54 +1,56 @@
 package com.haanhgs.app.biometriclogin;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.biometric.BiometricPrompt;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
-
 import java.util.concurrent.Executor;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricPrompt;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Handler handler = new Handler();
-    private Button bnSignIn;
-    private ProgressBar pbrMain;
+    @BindView(R.id.bnSignIn)
+    Button bnSignIn;
+    @BindView(R.id.pbrMain)
+    ProgressBar pbrMain;
+    @BindView(R.id.clHome)
+    ConstraintLayout clHome;
 
-    private void initViews(){
-        bnSignIn = findViewById(R.id.bnSignIn);
-        pbrMain = findViewById(R.id.pbrMain);
+    private static final String ETAG = "E.MainActivity";
+    private BiometricPrompt.PromptInfo promptInfo;
+
+    private Handler handler = new Handler();
+    private Executor executor = runnable -> handler.post(runnable);
+
+    private void initViews() {
         pbrMain.setVisibility(View.INVISIBLE);
     }
 
-    private void hideViews(){
+    private void hideViews() {
         bnSignIn.setVisibility(View.INVISIBLE);
         pbrMain.setVisibility(View.INVISIBLE);
     }
 
-    public void showViews(){
+    public void showViews() {
         bnSignIn.setVisibility(View.VISIBLE);
         pbrMain.setVisibility(View.INVISIBLE);
     }
 
-    private Executor executor = new Executor() {
-        @Override
-        public void execute(@NonNull Runnable command) {
-            handler.post(command);
-        }
-    };
-
-    private void openFragment(){
+    private void openFragment() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment fragment = getSupportFragmentManager().findFragmentByTag("home");
-        if (fragment == null){
-            Home home = new Home();
+        if (fragment == null) {
+            FragmentHome home = new FragmentHome();
             ft.replace(R.id.clHome, home, "home");
             ft.commit();
         } else {
@@ -56,73 +58,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void getPromtInfo(){
+        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Login with Biometrics")
+//                .setSubtitle("Log in using your credentials")
+//                .setNegativeButtonText("Cancel")
 
-    private void showBiometricPrompt() {
-        BiometricPrompt.PromptInfo promptInfo =
-                new BiometricPrompt.PromptInfo.Builder()
-                        .setTitle("Login with Biometrics")
-                        .setSubtitle("Log in using your credentials")
-                        .setNegativeButtonText("Cancel")
-//                        .setConfirmationRequired(true)
-                        //this will set other way to login
-                        //but have to remove setNegativeButton :)
-//                        .setDeviceCredentialAllowed(true)
-                        .build();
-
-        BiometricPrompt biometricPrompt = new BiometricPrompt(MainActivity.this,
-                executor, new BiometricPrompt.AuthenticationCallback() {
-
-            @Override
-            public void onAuthenticationError(int errorCode,
-                                              @NonNull CharSequence errString) {
-                super.onAuthenticationError(errorCode, errString);
-                Toast.makeText(getApplicationContext(),
-                        "Authentication error: " + errString, Toast.LENGTH_SHORT)
-                        .show();
-            }
-
-            @Override
-            public void onAuthenticationSucceeded(
-                    @NonNull BiometricPrompt.AuthenticationResult result) {
-                super.onAuthenticationSucceeded(result);
-                BiometricPrompt.CryptoObject authenticatedCryptoObject = result.getCryptoObject();
-                hideViews();
-                openFragment();
-
-            }
-
-            @Override
-            public void onAuthenticationFailed() {
-                super.onAuthenticationFailed();
-                Toast.makeText(getApplicationContext(), "Authentication failed", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
-
-        biometricPrompt.authenticate(promptInfo);
+                //this will set other way to login
+                //but have to remove setNegativeButton :)
+                .setConfirmationRequired(true)
+                .setDeviceCredentialAllowed(true)
+                .build();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        ButterKnife.bind(this);
         initViews();
-
-        bnSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                pbrMain.setVisibility(View.VISIBLE);
-                showBiometricPrompt();
-            }
-        });
+        getPromtInfo();
     }
 
-    private void listenToBackPressed(){
+    private void listenToBackPressed() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.clHome);
-        if (fragment instanceof OnBackPress){
-            ((OnBackPress)fragment).onBackPressed();
-        }else {
+        if (fragment instanceof OnBackPress) {
+            ((OnBackPress) fragment).onBackPressed();
+        } else {
             super.onBackPressed();
         }
     }
@@ -130,5 +92,42 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         listenToBackPressed();
+    }
+
+    private void promtBiometric(){
+        BiometricPrompt biometricPrompt = new BiometricPrompt(this, executor,
+                new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString){
+                super.onAuthenticationError(errorCode, errString);
+                Log.e(ETAG, errString.toString());
+                showViews();
+            }
+
+            @Override
+            public void onAuthenticationSucceeded(
+                    @NonNull BiometricPrompt.AuthenticationResult result){
+                super.onAuthenticationSucceeded(result);
+                //this is not neccesary
+                BiometricPrompt.CryptoObject authenticatedCryptoObject = result.getCryptoObject();
+                hideViews();
+                openFragment();
+            }
+
+            @Override
+            public void onAuthenticationFailed() {
+                super.onAuthenticationFailed();
+                Log.e(ETAG, "authentication failed");
+                showViews();
+            }
+
+        });
+        biometricPrompt.authenticate(promptInfo);
+    }
+
+    @OnClick(R.id.bnSignIn)
+    public void onViewClicked() {
+        pbrMain.setVisibility(View.VISIBLE);
+        promtBiometric();
     }
 }
