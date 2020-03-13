@@ -16,8 +16,8 @@ public class Controller {
 
     private static final String DTAG = "D.Controller";
     private static final String ETAG = "E.Controller";
-    private AppCompatActivity activity;
-    private SuccesLogIn onSuccesLogIn;
+    private final AppCompatActivity activity;
+    private final SuccesLogIn onSuccesLogIn;
     private BiometricPrompt.PromptInfo promptInfo;
     private BiometricPrompt biometricPrompt;
 
