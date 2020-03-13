@@ -32,7 +32,7 @@ dependencies {
 
 
     //import biometric
-    implementation 'androidx.biometric:biometric:1.0.0'
+    implementation 'androidx.biometric:biometric:1.0.1'
 
     //Butterknife
     implementation 'com.jakewharton:butterknife:10.2.0'
