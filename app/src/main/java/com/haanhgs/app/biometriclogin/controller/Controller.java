@@ -48,9 +48,9 @@ public class Controller {
         }
     }
 
-    public Controller(AppCompatActivity activity, SuccesLogIn onSuccesLogIn) {
+    public Controller(AppCompatActivity activity) {
         this.activity = activity;
-        this.onSuccesLogIn = onSuccesLogIn;
+        this.onSuccesLogIn = (SuccesLogIn)activity;
         getPromptInfo();
         checkBiometricsHardware();
     }

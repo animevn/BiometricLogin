@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements SuccesLogIn {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        controller = new Controller(this, this);
+        controller = new Controller(this);
     }
 
     private void listenToBackPressInFragment(){
