@@ -1,19 +1,23 @@
 package com.haanhgs.app.biometriclogin.controller;
 
 import android.util.Log;
+import com.haanhgs.app.biometriclogin.R;
+import com.haanhgs.app.biometriclogin.view.FragmentHome;
 import java.util.concurrent.Executor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 public class Controller {
 
     private static final String DTAG = "D.Controller";
     private static final String ETAG = "E.Controller";
     private AppCompatActivity activity;
-    private OnSuccesLogIn onSuccesLogIn;
+    private SuccesLogIn onSuccesLogIn;
     private BiometricPrompt.PromptInfo promptInfo;
     private BiometricPrompt biometricPrompt;
 
@@ -44,7 +48,7 @@ public class Controller {
         }
     }
 
-    public Controller(AppCompatActivity activity, OnSuccesLogIn onSuccesLogIn) {
+    public Controller(AppCompatActivity activity, SuccesLogIn onSuccesLogIn) {
         this.activity = activity;
         this.onSuccesLogIn = onSuccesLogIn;
         getPromptInfo();
@@ -68,7 +72,7 @@ public class Controller {
                         super.onAuthenticationSucceeded(result);
                         //for encrypt user data or sth, here is unneccessary
 //                        BiometricPrompt.CryptoObject cryptoObject = result.getCryptoObject();
-                        onSuccesLogIn.onSuccess(result);
+                        onSuccesLogIn.onSuccessLogIn(result);
                     }
 
                     @Override
@@ -77,6 +81,17 @@ public class Controller {
                         Log.e(ETAG, "authentication failed");
                     }
                 });
+    }
+
+    public void openFragment(){
+        FragmentTransaction ft = activity.getSupportFragmentManager().beginTransaction();
+        Fragment fragment = activity.getSupportFragmentManager().findFragmentByTag("home");
+        if (fragment == null){
+            FragmentHome fragmentHome = new FragmentHome();
+            ft.replace(R.id.clHome, fragmentHome, "home").commit();
+        }else {
+            ft.attach(fragment);
+        }
     }
 
     public void signIn(){
