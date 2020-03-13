@@ -34,6 +34,10 @@ dependencies {
     //import biometric
     implementation 'androidx.biometric:biometric:1.0.1'
 
+    //for viewmodel
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    annotationProcessor "androidx.lifecycle:lifecycle-extensions:2.2.0"
+
     //Butterknife
     implementation 'com.jakewharton:butterknife:10.2.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'

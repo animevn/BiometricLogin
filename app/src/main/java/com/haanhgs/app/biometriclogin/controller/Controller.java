@@ -1,5 +1,6 @@
 package com.haanhgs.app.biometriclogin.controller;
 
+import android.content.pm.ActivityInfo;
 import android.util.Log;
 import com.haanhgs.app.biometriclogin.R;
 import com.haanhgs.app.biometriclogin.view.FragmentHome;
@@ -46,6 +47,10 @@ public class Controller {
                 Log.e(ETAG, "The user hasn't associated any biometric credentials.");
                 break;
         }
+    }
+
+    public void setPortraitMode(){
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     public Controller(AppCompatActivity activity) {
