@@ -1,6 +1,7 @@
-package com.haanhgs.app.biometriclogin;
+package com.haanhgs.app.biometriclogin.view;
 
 import android.os.Bundle;
+import com.haanhgs.app.biometriclogin.R;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 

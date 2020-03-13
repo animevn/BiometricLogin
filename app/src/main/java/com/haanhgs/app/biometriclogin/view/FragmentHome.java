@@ -1,4 +1,4 @@
-package com.haanhgs.app.biometriclogin;
+package com.haanhgs.app.biometriclogin.view;
 
 import androidx.fragment.app.Fragment;
 
