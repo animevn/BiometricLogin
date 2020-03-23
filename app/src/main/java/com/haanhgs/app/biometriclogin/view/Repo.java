@@ -1,9 +1,8 @@
-package com.haanhgs.app.biometriclogin.controller;
+package com.haanhgs.app.biometriclogin.view;
 
-import android.content.pm.ActivityInfo;
 import android.util.Log;
 import com.haanhgs.app.biometriclogin.R;
-import com.haanhgs.app.biometriclogin.view.FragmentHome;
+
 import java.util.concurrent.Executor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,10 +12,10 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-public class Controller {
+public class Repo {
 
-    private static final String DTAG = "D.Controller";
-    private static final String ETAG = "E.Controller";
+    private static final String DTAG = "D.Repo";
+    private static final String ETAG = "E.Repo";
     private final AppCompatActivity activity;
     private final SuccesLogIn onSuccesLogIn;
     private BiometricPrompt.PromptInfo promptInfo;
@@ -49,14 +48,9 @@ public class Controller {
         }
     }
 
-    public void setPortraitMode(){
-        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    }
-
-    public Controller(AppCompatActivity activity) {
+    public Repo(AppCompatActivity activity) {
         this.activity = activity;
         this.onSuccesLogIn = (SuccesLogIn)activity;
-        getPromptInfo();
         checkBiometricsHardware();
     }
 

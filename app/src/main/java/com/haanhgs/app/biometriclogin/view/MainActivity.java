@@ -5,8 +5,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import com.haanhgs.app.biometriclogin.R;
-import com.haanhgs.app.biometriclogin.controller.Controller;
-import com.haanhgs.app.biometriclogin.controller.SuccesLogIn;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
@@ -22,11 +20,11 @@ public class MainActivity extends AppCompatActivity implements SuccesLogIn {
     @BindView(R.id.pbrMain)
     ProgressBar pbrMain;
 
-    private Controller controller;
+    private Repo repo;
 
     public void showViews() {
         bnSignIn.setVisibility(View.VISIBLE);
-        pbrMain.setVisibility(View.INVISIBLE);
+        pbrMain.setVisibility(View.VISIBLE);
     }
 
     private void hideViews() {
@@ -39,8 +37,7 @@ public class MainActivity extends AppCompatActivity implements SuccesLogIn {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        controller = new Controller(this);
-        controller.setPortraitMode();
+        repo = new Repo(this);
     }
 
     private void listenToBackPressInFragment(){
@@ -59,12 +56,12 @@ public class MainActivity extends AppCompatActivity implements SuccesLogIn {
 
     @OnClick(R.id.bnSignIn)
     public void onViewClicked() {
-        controller.signIn();
+        repo.signIn();
     }
 
     @Override
     public void onSuccessLogIn(BiometricPrompt.AuthenticationResult result) {
         hideViews();
-        controller.openFragment();
+        repo.openFragment();
     }
 }

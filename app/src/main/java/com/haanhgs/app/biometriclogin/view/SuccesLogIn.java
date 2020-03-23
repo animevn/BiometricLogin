@@ -1,4 +1,4 @@
-package com.haanhgs.app.biometriclogin.controller;
+package com.haanhgs.app.biometriclogin.view;
 
 import androidx.biometric.BiometricPrompt;
 

@@ -43,14 +43,11 @@ public class FragmentHome extends Fragment implements BackPressed{
 
     private void closeFragmentWhenBackPressed(){
         ((MainActivity)context).showViews();
-        FragmentManager manager = getFragmentManager();
-        if (manager != null){
-            Fragment fragment = manager.findFragmentById(R.id.clHome);
-            FragmentTransaction ft = manager.beginTransaction();
-            if (fragment != null) ft.remove(fragment).commit();
-        }
+        FragmentManager manager = getParentFragmentManager();
+        Fragment fragment = manager.findFragmentById(R.id.clHome);
+        FragmentTransaction ft = manager.beginTransaction();
+        if (fragment != null) ft.remove(fragment).commit();
     }
-
 
     @Override
     public void onBackPressed() {
