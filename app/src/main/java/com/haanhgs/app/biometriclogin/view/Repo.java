@@ -2,7 +2,6 @@ package com.haanhgs.app.biometriclogin.view;
 
 import android.util.Log;
 import com.haanhgs.app.biometriclogin.R;
-
 import java.util.concurrent.Executor;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;

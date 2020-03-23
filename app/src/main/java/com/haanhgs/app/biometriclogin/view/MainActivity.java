@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements SuccesLogIn {
         pbrMain.setVisibility(View.INVISIBLE);
     }
 
-    private void hideActionBarInPortraitMode(){
+    private void hideActionBarInLandscapeMode(){
         int rotation = getWindowManager().getDefaultDisplay().getRotation();
         if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270){
             if (getSupportActionBar() != null) getSupportActionBar().hide();
@@ -49,15 +49,12 @@ public class MainActivity extends AppCompatActivity implements SuccesLogIn {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        hideActionBarInPortraitMode();
+        hideActionBarInLandscapeMode();
         viewModel = new ViewModelProvider(this).get(MyViewModel.class);
-        viewModel.getIsLogin().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean){
-                    repo.openFragment();
-                    hideViews();
-                }
+        viewModel.getIsLogin().observe(this, aBoolean -> {
+            if (aBoolean){
+                repo.openFragment();
+                hideViews();
             }
         });
         repo = new Repo(this);
