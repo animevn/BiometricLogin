@@ -8,11 +8,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.haanhgs.app.biometriclogin.R;
+import com.haanhgs.app.biometriclogin.viewmodel.MyViewModel;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -24,11 +30,14 @@ public class FragmentHome extends Fragment implements BackPressed{
     TextView tvInfo;
 
     private Context context;
+    private FragmentActivity activity;
+    private MyViewModel viewModel;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         this.context = context;
+        activity = getActivity();
     }
 
     @Nullable
@@ -38,6 +47,15 @@ public class FragmentHome extends Fragment implements BackPressed{
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
+        viewModel = new ViewModelProvider(activity).get(MyViewModel.class);
+        viewModel.getIsLogin().observe(activity, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (!aBoolean){
+                    closeFragmentWhenBackPressed();
+                }
+            }
+        });
         return view;
     }
 
@@ -51,6 +69,6 @@ public class FragmentHome extends Fragment implements BackPressed{
 
     @Override
     public void onBackPressed() {
-        closeFragmentWhenBackPressed();
+        viewModel.setIsLogin(false);
     }
 }

@@ -1,14 +1,18 @@
 package com.haanhgs.app.biometriclogin.view;
 
 import android.os.Bundle;
+import android.view.Surface;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import com.haanhgs.app.biometriclogin.R;
+import com.haanhgs.app.biometriclogin.viewmodel.MyViewModel;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -21,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements SuccesLogIn {
     ProgressBar pbrMain;
 
     private Repo repo;
+    private MyViewModel viewModel;
 
     public void showViews() {
         bnSignIn.setVisibility(View.VISIBLE);
@@ -32,11 +37,29 @@ public class MainActivity extends AppCompatActivity implements SuccesLogIn {
         pbrMain.setVisibility(View.INVISIBLE);
     }
 
+    private void hideActionBarInPortraitMode(){
+        int rotation = getWindowManager().getDefaultDisplay().getRotation();
+        if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270){
+            if (getSupportActionBar() != null) getSupportActionBar().hide();
+        }
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        hideActionBarInPortraitMode();
+        viewModel = new ViewModelProvider(this).get(MyViewModel.class);
+        viewModel.getIsLogin().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if (aBoolean){
+                    repo.openFragment();
+                    hideViews();
+                }
+            }
+        });
         repo = new Repo(this);
     }
 
@@ -61,7 +84,6 @@ public class MainActivity extends AppCompatActivity implements SuccesLogIn {
 
     @Override
     public void onSuccessLogIn(BiometricPrompt.AuthenticationResult result) {
-        hideViews();
-        repo.openFragment();
+        viewModel.setIsLogin(true);
     }
 }
